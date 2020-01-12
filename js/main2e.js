@@ -7,6 +7,7 @@ import DiskII from './cards/disk2';
 import Parallel from './cards/parallel';
 import RAMFactor from './cards/ramfactor';
 import SmartPort from './cards/smartport';
+import Serial from './cards/serial';
 import Thunderclock from './cards/thunderclock';
 
 import apple2e_charset from './roms/apple2e_char';
@@ -59,6 +60,7 @@ var cpu = apple2.getCPU();
 var printer = new Printer('#printer-modal .paper');
 
 var parallel = new Parallel(io, printer);
+var serial = new Serial(io, printer);
 var slinky = new RAMFactor(io, 1024 * 1024);
 var disk2 = new DiskII(io, driveLights);
 var clock = new Thunderclock(io);
@@ -67,7 +69,8 @@ var smartport = new SmartPort(io, cpu);
 initUI(apple2, disk2, smartport, printer, options.e);
 
 io.setSlot(1, parallel);
-io.setSlot(2, slinky);
+io.setSlot(2, serial);
+io.setSlot(4, slinky);
 io.setSlot(5, clock);
 io.setSlot(6, disk2);
 io.setSlot(7, smartport);
