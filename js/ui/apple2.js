@@ -42,6 +42,8 @@ var keyboard;
 var io;
 var _currentDrive = 1;
 
+var mouseMode = false;
+
 export const driveLights = new DriveLights();
 
 export function dumpAppleSoftProgram() {
@@ -759,7 +761,7 @@ export function updateJoystick() {
 }
 
 function _mousemove(evt) {
-    if (gamepad || disableMouseJoystick) {
+    if (gamepad || disableMouseJoystick || mouseMode) {
         return;
     }
 
@@ -819,6 +821,10 @@ export function clearPrinterPaper() {
     _printer.clear();
 }
 
+export function enableMouseMode(on) {
+    mouseMode = on;
+}
+
 export function initUI(apple2, disk2, smartPort, printer, e) {
     _apple2 = apple2;
     cpu = _apple2.getCPU();
@@ -863,13 +869,13 @@ export function initUI(apple2, disk2, smartPort, printer, e) {
 
     document.querySelectorAll('canvas').forEach(function(canvas) {
         canvas.addEventListener('mousedown', function(evt) {
-            if (!gamepad) {
+            if (!gamepad && !mouseMode) {
                 io.buttonDown(evt.which == 1 ? 0 : 1);
             }
             evt.preventDefault();
         });
         canvas.addEventListener('mouseup', function(evt) {
-            if (!gamepad) {
+            if (!gamepad && !mouseMode) {
                 io.buttonUp(evt.which == 1 ? 0 : 1);
             }
         });
