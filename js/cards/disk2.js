@@ -125,8 +125,29 @@ export default function DiskII(io, callbacks, sectors = 16)
         0xD9, 0xD9, 0xD8, 0xA0,  0x0A, 0x0A, 0x0A, 0x0A,    0xD8, 0xD8, 0xD8, 0xD8,  0xD8, 0xD8, 0xD8, 0xD8, // C
         0xD8, 0x08, 0xE8, 0xE8,  0x0A, 0x0A, 0x0A, 0x0A,    0xE8, 0xE8, 0xE8, 0xE8,  0xE8, 0xE8, 0xE8, 0xE8, // D
         0xFD, 0xFD, 0xF8, 0xF8,  0x0A, 0x0A, 0x0A, 0x0A,    0xF8, 0xF8, 0xF8, 0xF8,  0xF8, 0xF8, 0xF8, 0xF8, // E
-        0xDD, 0x4D, 0xE0, 0xE0,  0x0A, 0x0A, 0x0A, 0x0A,    0x88, 0x88, 0x08, 0x08,  0x88, 0x88, 0x08, 0x08  // F
+        0xDD, 0x4D, 0xE0, 0xE0,  0x0A, 0x0A, 0x0A, 0x0A,    0x08, 0x08, 0x88, 0x88,  0x08, 0x08, 0x88, 0x88  // F
     ];
+ 
+    var CMDS = [
+        'CLR', // 0
+        'clr', // 1
+        'clr', // 2
+        'clr', // 3
+        'clr', // 4
+        'clr', // 5
+        'clr', // 6
+        'clr', // 7
+        'NOP', // 8
+        'SL0', // 9
+        'SR',  // A
+        'LD',  // B
+        'nop', // C
+        'SL1', // D
+        'sr',  // E
+        'ld',  // F
+    ];
+
+    var PULSE = 5;
 
     function _debug() {
         // debug.apply(this, arguments);
@@ -153,7 +174,7 @@ export default function DiskII(io, callbacks, sectors = 16)
 
         while (workCycles-- > 0) {
             var pulse = 0;
-            if (_clock == 4) {
+            if (_clock == PULSE) {
                 pulse = track[_cur.head];
                 if (!pulse) {
                     if (++_zeros > 2) {
@@ -174,7 +195,7 @@ export default function DiskII(io, callbacks, sectors = 16)
             var command = _P6[idx];
 
             if (_on && _q7) {
-                debug('clock:', _clock, 'command:', toHex(command), 'q6:', _q6);
+                debug('clock:', _clock, 'state', _state.toString(16), _q6 ? 'load' : 'shift', 'command:', CMDS[command & 0xf]);
             }
 
             switch (command & 0xf) {
@@ -202,11 +223,12 @@ export default function DiskII(io, callbacks, sectors = 16)
             }
             _state = command >> 4;
 
-            if (_clock == 4) {
+            if (_clock == PULSE) {
                 if (_on) {
                     if (_q7) {
+                        var oldCur = track[_cur.head];
                         track[_cur.head] = _state & 0x8 ? 0x01 : 0x00;
-                        debug('Wrote', _state & 0x8 ? 0x01 : 0x00);
+                        debug('Wrote', _state & 0x8 ? 0x01 : 0x00, 'over', oldCur, 'at', _cur.head);
                     }
 
                     if (++_cur.head >= track.length) {
@@ -293,6 +315,13 @@ export default function DiskII(io, callbacks, sectors = 16)
         var result = 0;
         var readMode = val === undefined;
 
+        _moveHead();
+
+        if (!readMode) {
+            debug(toHex(val), 'to bus');
+            _bus = val;
+        }
+
         switch (off & 0x8f) {
         case LOC.PHASE0OFF: // 0x00
             setPhase(0, false);
@@ -325,6 +354,8 @@ export default function DiskII(io, callbacks, sectors = 16)
                     _offTimeout = window.setTimeout(function() {
                         _debug('Drive Off');
                         _on = false;
+                        _state = 0;
+                        _clock = 0;
                         if (callbacks.driveLight) { callbacks.driveLight(_drive, false); }
                     }, 1000);
                 }
@@ -396,7 +427,7 @@ export default function DiskII(io, callbacks, sectors = 16)
             _writeMode = false;
             break;
         case LOC.DRIVEWRITEMODE: // 0x0f (Q7H)
-            _debug('Write Mode');
+            debug('Write Mode');
             _q7 = 1;
             _writeMode = true;
             break;
@@ -405,16 +436,12 @@ export default function DiskII(io, callbacks, sectors = 16)
             break;
         }
 
-        _moveHead();
-
         if (readMode) {
             if ((off & 0x01) === 0) {
                 result = _latch;
             } else {
                 result = 0;
             }
-        } else {
-            _bus = val;
         }
 
         return result;
