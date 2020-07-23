@@ -66,7 +66,6 @@ export default function DiskII(io, callbacks, sectors = 16)
     var _offTimeout = null;
     var _q6 = 0;
     var _q7 = 0;
-    var _writeMode = false; // q7
     var _on = false;
     var _drive = 1;
     var _cur = _drives[_drive - 1];
@@ -127,7 +126,7 @@ export default function DiskII(io, callbacks, sectors = 16)
         0xFD, 0xFD, 0xF8, 0xF8,  0x0A, 0x0A, 0x0A, 0x0A,    0xF8, 0xF8, 0xF8, 0xF8,  0xF8, 0xF8, 0xF8, 0xF8, // E
         0xDD, 0x4D, 0xE0, 0xE0,  0x0A, 0x0A, 0x0A, 0x0A,    0x08, 0x08, 0x88, 0x88,  0x08, 0x08, 0x88, 0x88  // F
     ];
- 
+
     var CMDS = [
         'CLR', // 0
         'clr', // 1
@@ -244,14 +243,14 @@ export default function DiskII(io, callbacks, sectors = 16)
     }
 
     function _readWriteNext() {
-        if (_skip || _writeMode) {
+        if (_skip || _q7) {
             var track = _cur.tracks[_cur.track >> 2];
             if (track && track.length) {
                 if (_cur.head >= track.length) {
                     _cur.head = 0;
                 }
 
-                if (_writeMode) {
+                if (_q7) {
                     if (!_cur.readOnly) {
                         track[_cur.head] = _bus;
                         if (!_cur.dirty) {
@@ -318,7 +317,7 @@ export default function DiskII(io, callbacks, sectors = 16)
         _moveHead();
 
         if (!readMode) {
-            debug(toHex(val), 'to bus');
+            _debug(toHex(val), 'to bus');
             _bus = val;
         }
 
@@ -395,7 +394,7 @@ export default function DiskII(io, callbacks, sectors = 16)
 
         case LOC.DRIVEREAD: // 0x0c (Q6L) Shift
             _q6 = 0;
-            if (_writeMode) {
+            if (_q7) {
                 _debug('clearing _q6/SHIFT');
             }
             if (!_cur.rawTracks) {
@@ -405,11 +404,11 @@ export default function DiskII(io, callbacks, sectors = 16)
 
         case LOC.DRIVEWRITE: // 0x0d (Q6H) LOAD
             _q6 = 1;
-            if (_writeMode) {
+            if (_q7) {
                 _debug('setting _q6/LOAD');
             }
             if (!_cur.rawTracks) {
-                if (readMode && !_writeMode) {
+                if (readMode && !_q7) {
                     if (_cur.readOnly) {
                         _latch = 0xff;
                         _debug('Setting readOnly');
@@ -424,12 +423,10 @@ export default function DiskII(io, callbacks, sectors = 16)
         case LOC.DRIVEREADMODE:  // 0x0e (Q7L)
             _debug('Read Mode');
             _q7 = 0;
-            _writeMode = false;
             break;
         case LOC.DRIVEWRITEMODE: // 0x0f (Q7H)
-            debug('Write Mode');
+            _debug('Write Mode');
             _q7 = 1;
-            _writeMode = true;
             break;
 
         default:
@@ -470,7 +467,7 @@ export default function DiskII(io, callbacks, sectors = 16)
         reset: function disk2_reset() {
             if (_on) {
                 callbacks.driveLight(_drive, false);
-                _writeMode = false;
+                _q7 = 0;
                 _on = false;
                 _drive = 1;
                 _cur = _drives[_drive - 1];
@@ -505,7 +502,8 @@ export default function DiskII(io, callbacks, sectors = 16)
                 drives: [],
                 skip: _skip,
                 latch: _latch,
-                writeMode: _writeMode,
+                q6: _q6,
+                q7: _q7,
                 on: _on,
                 drive: _drive
             };
@@ -540,7 +538,8 @@ export default function DiskII(io, callbacks, sectors = 16)
             });
             _skip = state.skip;
             _latch = state.latch;
-            _writeMode = state.writeMode;
+            _q6 = state.q6;
+            _q7 = state.q7;
             _on = state.on;
             _drive = state.drive;
             _cur = _drives[_drive - 1];
