@@ -133,8 +133,92 @@ export default function ApplesoftDump(mem)
         return (msb << 8) | lsb;
     }
 
+    function readInt(addr) {
+        var lsb, msb;
+
+        msb = readByte(addr);
+        lsb = readByte(addr + 1);
+
+        return (msb << 8) | lsb;
+    }
+
+    function readFloat(addr) {
+        var exponent = readByte(addr);
+        if (exponent === 0) {
+            return 0;
+        }
+        exponent = (exponent & 0x80 ? 1 : -1) * ((exponent & 0x7F) - 1);
+
+        var msb =  readByte(addr + 1);
+        var sb3 =  readByte(addr + 2);
+        var sb2 =  readByte(addr + 3);
+        var lsb =  readByte(addr + 4);
+        var sign = msb & 0x80 ? -1 : 1;
+        msb &= 0x7F;
+        var mantissa = (msb << 24) | (sb3 << 16) | (sb2 << 8) | lsb;
+
+        return sign * (1 + mantissa / 0x80000000) * Math.pow(2, exponent);
+    }
+
+    function readString(len, addr) {
+        var str = '';
+        for (var idx = 0; idx < len; idx++) {
+            str += String.fromCharCode(readByte(addr + idx) & 0x7F);
+        }
+        return str;
+    }
+
+    function readVar(addr) {
+        var firstByte = readByte(addr);
+        var lastByte = readByte(addr + 1);
+        var firstLetter = firstByte & 0x7F;
+        var lastLetter = lastByte & 0x7F;
+
+        var name =
+            String.fromCharCode(firstLetter) +
+            (lastLetter ? String.fromCharCode(lastLetter) : '');
+        var type = (lastByte & 0x80) >> 7 | (firstByte & 0x80) >> 6;
+
+        return { name, type };
+    }
+
+    function readArray(addr, type, sizes) {
+        function _readArray(sizes) {
+            var strLen, strAddr;
+            var value;
+            var ary = [];
+            var len = sizes[0];
+
+            for (var idx = 0; idx < len; idx++) {
+                if (sizes.length > 1) {
+                    value = _readArray(sizes.slice(1));
+                } else {
+                    switch (type) {
+                    case 0: // Real
+                        value = readFloat(addr);
+                        addr += 5;
+                        break;
+                    case 1: // String
+                        strLen = readByte(addr);
+                        strAddr = readWord(addr + 1);
+                        value = readString(strLen, strAddr);
+                        addr += 3;
+                        break;
+                    case 3: // Integer
+                        value = readInt(addr);
+                        addr += 2;
+                        break;
+                    }
+                }
+                ary[idx] = value;
+            }
+            return ary;
+        }
+        return _readArray(sizes);
+    }
+
     return {
-        toString: function () {
+        dumpProgram: function() {
             var str = '';
             var start = readWord(0x67); // Start
             var end = readWord(0xaf); // End of program
@@ -168,6 +252,57 @@ export default function ApplesoftDump(mem)
             } while (addr && addr >= start && addr < end);
 
             return str;
+        },
+
+        dumpVariables: function() {
+            const simpleVariableTable = readWord(0x69);
+            const arrayVariableTable = readWord(0x6B);
+            const variableStorageEnd = readWord(0x6D);
+            // var stringStorageStart = readWord(0x6F);
+
+            let addr;
+            const vars = [];
+            let value;
+            let strLen, strAddr;
+
+            for (addr = simpleVariableTable; addr < arrayVariableTable; addr += 7) {
+                const { name, type } = readVar(addr);
+
+                switch (type) {
+                case 0: // Real
+                    value = readFloat(addr + 2);
+                    break;
+                case 1: // String
+                    strLen = readByte(addr + 2);
+                    strAddr = readWord(addr + 3);
+                    value = readString(strLen, strAddr);
+                    break;
+                case 3: // Integer
+                    value = readInt(addr + 2);
+                    break;
+                }
+                vars.push({ name, type, value });
+            }
+
+            while (addr < variableStorageEnd) {
+                const { name, type } = readVar(addr);
+                const off = readWord(addr + 2);
+                const dim = readByte(addr + 4);
+                const sizes = [];
+                for (let idx = 0; idx < dim; idx++) {
+                    sizes[idx] = readInt(addr + 5 + idx * 2);
+                }
+                value = readArray(addr + 5 + dim * 2, type, sizes);
+                vars.push({ name, sizes, type, value });
+
+                addr += off;
+            }
+
+            return vars;
+        },
+
+        toString: function() {
+            return this.dumpProgram();
         }
     };
 }

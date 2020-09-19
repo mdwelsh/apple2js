@@ -42,12 +42,11 @@ var _currentDrive = 1;
 
 export const driveLights = new DriveLights();
 
-export function dumpAppleSoftProgram() {
-    var dumper = new ApplesoftDump(cpu);
-    debug(dumper.toString());
+export function dumpAppleSoft() {
+    return new ApplesoftDump(cpu);
 }
 
-export function compileAppleSoftProgram(program) {
+export function compileAppleSoft(program) {
     var compiler = new ApplesoftCompiler(cpu);
     compiler.compile(program);
 }
