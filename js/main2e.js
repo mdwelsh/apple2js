@@ -1,7 +1,8 @@
 import Prefs from './prefs';
 
-import { driveLights, initUI, enableMouseMode, updateUI } from './ui/apple2';
+import { driveLights, initUI, updateUI } from './ui/apple2';
 import Printer from './ui/printer';
+import { MouseUI } from './ui/mouse';
 
 import DiskII from './cards/disk2';
 import Parallel from './cards/parallel';
@@ -59,40 +60,15 @@ export var apple2 = new Apple2(options);
 var io = apple2.getIO();
 var cpu = apple2.getCPU();
 
-function mouseMode(on) {
-    enableMouseMode(on);
-    if (on) {
-        canvas.classList.add('mouseMode');
-    } else {
-        canvas.classList.remove('mouseMode');
-    }
-}
-
 var printer = new Printer('#printer-modal .paper');
+var mouseUI = new MouseUI(canvas);
 
 var parallel = new Parallel(io, printer);
 var slinky = new RAMFactor(io, 1024 * 1024);
 var disk2 = new DiskII(io, driveLights);
 var clock = new Thunderclock(io);
 var smartport = new SmartPort(io, cpu);
-var mouse = new Mouse(io, cpu, { mouseMode: mouseMode });
-
-canvas.addEventListener('mousemove', function (event) {
-    mouse.setMouseXY(
-        event.offsetX,
-        event.offsetY,
-        event.target.clientWidth,
-        event.target.clientHeight
-    );
-});
-
-canvas.addEventListener('mousedown', function () {
-    mouse.setMouseDown(true);
-});
-
-canvas.addEventListener('mouseup', function () {
-    mouse.setMouseDown(false);
-});
+var mouse = new Mouse(cpu, mouseUI);
 
 initUI(apple2, disk2, smartport, printer, options.e);
 
