@@ -1,7 +1,7 @@
 disk_index = [
   {
     "filename": "json/disks/mdwos.json",
-    "name": "mdwos",
+    "name": "mdwOS",
     "category": "mdw"
   },
   {
