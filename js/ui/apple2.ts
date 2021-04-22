@@ -217,6 +217,7 @@ interface JSONBinaryImage {
 }
 
 export function loadAjax(drive: DriveNumber, url: string) {
+    console.log("MDW: loadAjax called with drive " + drive + " url: " + url);
     loadingStart();
 
     fetch(url).then(function (response: Response) {
@@ -843,17 +844,19 @@ function onLoaded(apple2: Apple2, disk2: DiskII, smartPort: SmartPort, printer: 
     setInterval(updateKHz, 1000);
     initGamepad();
 
-    // Check for disks in hashtag
+    // MDW: Force load of our disk image on startup.
+    loadAjax(1, "json/disks/mdwos.json");
 
-    const hash = gup('disk') || hup();
-    if (hash) {
-        _apple2.stop();
-        processHash(hash);
-    } else {
-        vm.ready.then(() => {
-            _apple2.run();
-        });
-    }
+    // Check for disks in hashtag
+    //const hash = gup('disk') || hup();
+    //if (hash) {
+    //    _apple2.stop();
+    //    processHash(hash);
+    //} else {
+    //    vm.ready.then(() => {
+    //        _apple2.run();
+    //    });
+    //}
 }
 
 export function initUI(apple2: Apple2, disk2: DiskII, smartPort: SmartPort, printer: Printer, e: boolean) {

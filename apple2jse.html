@@ -15,7 +15,7 @@
 
 <title>Apple //jse - An Apple //e Emulator in JavaScript</title>
 
-<meta name="viewport" content="width=640, user-scalable=no" />
+<meta name="viewport" content="width=1092, user-scalable=no" />
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Apple //jse">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -50,10 +50,10 @@
     </div>
     <div id="display">
       <div class="overscan">
-        <canvas id="screen" width="592" height="416"></canvas>
+        <canvas id="screen" width="1092" height="768"></canvas>
       </div>
     </div>
-    <div class="inset">
+    <div id="disk-row" class="inset">
       <div class="disk"
            ondragover="Apple2.handleDragOver(1, event)"
            ondrop="Apple2.handleDrop(1, event)"
@@ -111,7 +111,7 @@
         Reset
       </button>
     </div>
-    <div class="inset">
+    <div id="keyboard-row" class="inset">
       <div id="keyboard"></div>
     </div>
   </div>

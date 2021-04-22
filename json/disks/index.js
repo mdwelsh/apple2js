@@ -1,8 +1,8 @@
 disk_index = [
   {
-    "filename": "json/disks/audit.json",
-    "name": "Apple II Audit",
-    "category": "Utility"
+    "filename": "json/disks/mdwos.json",
+    "name": "mdwos",
+    "category": "mdw"
   },
   {
     "filename": "json/disks/dos33master.json",
@@ -13,5 +13,10 @@ disk_index = [
     "filename": "json/disks/prodos.json",
     "name": "ProDOS",
     "category": "System"
+  },
+  {
+    "filename": "json/disks/audit.json",
+    "name": "Apple II Audit",
+    "category": "Utility"
   }
 ];
