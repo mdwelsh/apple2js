@@ -58,7 +58,8 @@ switch (romVersion) {
 
 var options = {
     canvas: document.getElementById('screen'),
-    gl: prefs.readPref('gl_canvas', 'true') === 'true',
+    // gl: prefs.readPref('gl_canvas', 'true') === 'true',
+    gl: false,  // MDW: Always disable.
     screen: [],
     rom: rom,
     characterRom: characterRom,

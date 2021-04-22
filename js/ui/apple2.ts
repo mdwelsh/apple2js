@@ -11,7 +11,7 @@ import Tape, { TAPE_TYPES } from './tape';
 import ApplesoftDump from '../applesoft/decompiler';
 import ApplesoftCompiler from '../applesoft/compiler';
 
-import { debug, gup, hup } from '../util';
+import { debug, /* gup, */ hup } from '../util';
 import { Apple2, Stats } from '../apple2';
 import DiskII, { DriveNumber, DRIVE_NUMBERS } from '../cards/disk2';
 import SmartPort from '../cards/smartport';

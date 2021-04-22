@@ -41,6 +41,10 @@ let oneSixtyMode = false;
 const tmpCanvas = document.createElement('canvas');
 const tmpContext = tmpCanvas.getContext('2d');
 
+// MDW: Add target screen size constants.
+const TARGET_WIDTH = 560 * 2;
+const TARGET_HEIGHT = 192 * 4;
+
 const buildScreen = (mainData: ImageData, mixData?: ImageData | null) => {
     if (!tmpContext) {
         throw new Error('No 2d context');
@@ -914,11 +918,14 @@ export class VideoModes2D implements VideoModes {
         hgr2: HiresPage,
         private canvas: HTMLCanvasElement,
         private e: boolean) {
+          console.log("MDW: VideoModes2D started");
         this._grs = [gr, gr2];
         this._hgrs = [hgr, hgr2];
         this._context = this.canvas.getContext('2d');
-        this._left = (this.canvas.width - 560) / 2;
-        this._top = (this.canvas.height - 384) / 2;
+        //this._left = (this.canvas.width - 560) / 2;
+        //this._top = (this.canvas.height - 384) / 2;
+        this._left = (this.canvas.width - TARGET_WIDTH) / 2;
+        this._top = (this.canvas.height - TARGET_HEIGHT) / 2;
     }
 
     private _refresh() {
@@ -1078,8 +1085,10 @@ export class VideoModes2D implements VideoModes {
             this._context.drawImage(
                 imageData,
                 0, 0, 560, 192,
-                this._left, this._top, 560, 384
+//                this._left, this._top, 560, 384
+                this._left, this._top, TARGET_WIDTH, TARGET_HEIGHT
             );
+            console.log("MDW: updateImage done");
             blitted = true;
         }
         return blitted;
@@ -1163,15 +1172,16 @@ export class VideoModes2D implements VideoModes {
     }
 
     scanlines(on: boolean) {
+        return;  // MDW: Don't support.
         // Can't apply scanline filter to canvas
-        const parent = this.canvas.parentElement;
-        if (parent) {
-            if (on) {
-                parent.classList.add('scanlines');
-            } else {
-                parent.classList.remove('scanlines');
-            }
-        }
+        //const parent = this.canvas.parentElement;
+        //if (parent) {
+        //    if (on) {
+        //        parent.classList.add('scanlines');
+        //    } else {
+        //        parent.classList.remove('scanlines');
+        //    }
+        //}
     }
 
     getText() {

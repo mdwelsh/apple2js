@@ -46,7 +46,7 @@ body {
 
 .outer {
     margin: auto;
-    width: 1092px;
+    /* width: 1092px; */
 }
 
 #display {
@@ -60,8 +60,8 @@ body {
     background-color: black;
     /* width: 592px; */
     /* height: 416px; */
-    width: 1092px; 
-    height: 768px;
+    width: 1184px;
+    height: 832px;
     /* border: 6px inset #f0edd0; */
     /* border-radius: 10px; */
 }
@@ -198,7 +198,7 @@ canvas {
 }
 
 .mono {
-    filter: url('#green');
+   filter: url('#green');
 }
 
 .scanlines:after {
@@ -214,11 +214,23 @@ canvas {
 
 #screen {
     cursor: crosshair;
-    -moz-image-rendering: -moz-crisp-edges;
-    -webkit-image-rendering: -webkit-optimize-contrast;
-    image-rendering: optimizeSpeed;
-    width: 592px;
-    height: 416px;
+    /* -moz-image-rendering: -moz-crisp-edges; */
+    /* -webkit-image-rendering: -webkit-optimize-contrast; */
+    /* image-rendering: optimizeSpeed; */
+
+    /* width: 592px; */
+    /* height: 416px; */
+    /* MDW: Original display is 280 x 192.
+     * The original canvas code draws with a target of 560 x 384.
+     * 592 x 416 gives us a 16px margin around the border.
+     * We want to go (1120 + 64 = 1184) x (768 + 64 = 832).
+     */
+    width: 1184px;  /* Want to keep this 4x of 560 x 192 */
+    height: 832px;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
 }
 
 #screen:-webkit-full-screen {
