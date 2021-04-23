@@ -42,8 +42,12 @@ const tmpCanvas = document.createElement('canvas');
 const tmpContext = tmpCanvas.getContext('2d');
 
 // MDW: Add target screen size constants.
-const TARGET_WIDTH = 560 * 2;
-const TARGET_HEIGHT = 192 * 4;
+//const TARGET_WIDTH = 560 * 2;
+//const TARGET_HEIGHT = 192 * 4;
+const TARGET_LEFT = 176;
+const TARGET_TOP = 160;
+const TARGET_WIDTH = 820;
+const TARGET_HEIGHT = 550;
 
 const buildScreen = (mainData: ImageData, mixData?: ImageData | null) => {
     if (!tmpContext) {
@@ -80,7 +84,9 @@ const orangeCol: Color = [255, 106, 60];
 const greenCol: Color = [20, 245, 60];
 const blueCol: Color = [20, 207, 253];
 const violetCol: Color = [255, 68, 253];
-const whiteCol: Color = [255, 255, 255];
+// MDW: Force monochrome.
+//const whiteCol: Color = [255, 255, 255];
+const whiteCol: Color = [20, 245, 60];
 const blackCol: Color = [0, 0, 0];
 
 // lores colors
@@ -1080,13 +1086,19 @@ export class VideoModes2D implements VideoModes {
         }
         let blitted = false;
 
+        // MDW - Debugging code.
+        //this._context.beginPath();
+        //this._context.lineWidth = 1;
+        //this._context.strokeStyle = "blue";
+        //this._context.rect(TARGET_LEFT, TARGET_TOP, TARGET_WIDTH, TARGET_HEIGHT);
+        //this._context.stroke();
+
         if (mainDirty.bottom !== -1 || (mixDirty && mixDirty.bottom !== -1)) {
             const imageData = buildScreen(mainData, mixData);
             this._context.drawImage(
                 imageData,
                 0, 0, 560, 192,
-//                this._left, this._top, 560, 384
-                this._left, this._top, TARGET_WIDTH, TARGET_HEIGHT
+                TARGET_LEFT, TARGET_TOP, TARGET_WIDTH, TARGET_HEIGHT
             );
             console.log("MDW: updateImage done");
             blitted = true;
@@ -1171,7 +1183,7 @@ export class VideoModes2D implements VideoModes {
         this._refresh();
     }
 
-    scanlines(on: boolean) {
+    scanlines(_on: boolean) {
         return;  // MDW: Don't support.
         // Can't apply scanline filter to canvas
         //const parent = this.canvas.parentElement;

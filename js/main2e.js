@@ -51,6 +51,15 @@ var options = {
     tick: updateUI
 };
 
+var canvas = document.getElementById('screen');
+var context = canvas.getContext('2d');
+var background = new Image();
+background.src = 'img/monitor.png';
+background.onload = () => {
+  context.drawImage(background, 0, 0, canvas.width, canvas.height);
+  console.log("MDW: Finished drawing image");
+};
+
 export var apple2 = new Apple2(options);
 var io = apple2.getIO();
 var cpu = apple2.getCPU();

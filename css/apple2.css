@@ -198,7 +198,7 @@ canvas {
 }
 
 .mono {
-   filter: url('#green');
+   /* filter: url('#green'); */
 }
 
 .scanlines:after {
