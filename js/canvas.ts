@@ -924,7 +924,6 @@ export class VideoModes2D implements VideoModes {
         hgr2: HiresPage,
         private canvas: HTMLCanvasElement,
         private e: boolean) {
-          console.log("MDW: VideoModes2D started");
         this._grs = [gr, gr2];
         this._hgrs = [hgr, hgr2];
         this._context = this.canvas.getContext('2d');
@@ -1100,7 +1099,6 @@ export class VideoModes2D implements VideoModes {
                 0, 0, 560, 192,
                 TARGET_LEFT, TARGET_TOP, TARGET_WIDTH, TARGET_HEIGHT
             );
-            console.log("MDW: updateImage done");
             blitted = true;
         }
         return blitted;

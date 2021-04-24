@@ -1151,6 +1151,24 @@ export default class CPU6502 {
         this.sp = state.sp;
         this.cycles = state.cycles;
     }
+    
+    // Added for MDWOS
+    public openlink(addr: word): void {
+        console.log("MDW: openlink called with address " + addr);
+        let url = '';
+        let curaddr = addr;
+        while (true) {
+            let curbyte = this.read(curaddr);
+            console.log("MDW: byte read: " + curbyte);
+            if (curbyte == 0) {
+                break;
+            }
+            url += String.fromCharCode(curbyte);
+            curaddr += 1;
+        }
+        console.log("MDW: openlink got url " + url);
+        window.open(url);
+    }
 
     public read(addr: word): byte;
     public read(page: byte, off: byte): byte;
