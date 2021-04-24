@@ -1159,7 +1159,6 @@ export default class CPU6502 {
         let curaddr = addr;
         while (true) {
             let curbyte = this.read(curaddr);
-            console.log("MDW: byte read: " + curbyte);
             if (curbyte == 0) {
                 break;
             }
