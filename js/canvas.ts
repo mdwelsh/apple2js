@@ -86,7 +86,7 @@ const blueCol: Color = [20, 207, 253];
 const violetCol: Color = [255, 68, 253];
 // MDW: Force monochrome.
 //const whiteCol: Color = [255, 255, 255];
-const whiteCol: Color = [20, 245, 60];
+const whiteCol: Color = [0, 255, 180];
 const blackCol: Color = [0, 0, 0];
 
 // lores colors
