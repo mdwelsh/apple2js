@@ -90,11 +90,11 @@ export function openLoad(driveString: string, event: MouseEvent) {
         openLoadHTTP(drive);
     } else {
         if (disk_cur_cat[drive]) {
-            const element = document.querySelector<HTMLSelectElement>('#category_select')!;
-            element.value = disk_cur_cat[drive];
+            //const element = document.querySelector<HTMLSelectElement>('#category_select')!;
+            //element.value = disk_cur_cat[drive];
             selectCategory();
         }
-        MicroModal.show('load-modal');
+        //MicroModal.show('load-modal');
     }
 }
 
@@ -103,7 +103,7 @@ export function openSave(driveString: string, event: MouseEvent) {
 
     const mimeType = 'application/octet-stream';
     const data = _disk2.getBinary(drive);
-    const a = document.querySelector<HTMLAnchorElement>('#local_save_link')!;
+    // const a = document.querySelector<HTMLAnchorElement>('#local_save_link')!;
 
     if (!data) {
         alert('No data from drive ' + drive);
@@ -111,22 +111,22 @@ export function openSave(driveString: string, event: MouseEvent) {
     }
 
     const blob = new Blob([data], { 'type': mimeType });
-    a.href = window.URL.createObjectURL(blob);
-    a.download = driveLights.label(drive) + '.dsk';
+    //a.href = window.URL.createObjectURL(blob);
+    //a.download = driveLights.label(drive) + '.dsk';
 
     if (event.metaKey) {
         dumpDisk(drive);
     } else {
-        const saveName = document.querySelector<HTMLInputElement>('#save_name')!;
-        saveName.value = driveLights.label(drive);
-        MicroModal.show('save-modal');
+        //const saveName = document.querySelector<HTMLInputElement>('#save_name')!;
+        //saveName.value = driveLights.label(drive);
+        //MicroModal.show('save-modal');
     }
 }
 
 export function openAlert(msg: string) {
-    const el = document.querySelector<HTMLDivElement>('#alert-modal .message')!;
-    el.innerText = msg;
-    MicroModal.show('alert-modal');
+    //const el = document.querySelector<HTMLDivElement>('#alert-modal .message')!;
+    //el.innerText = msg;
+    //MicroModal.show('alert-modal');
 }
 
 /********************************************************************
@@ -184,22 +184,22 @@ export function handleDrop(drive: number, event: DragEvent) {
 }
 
 function loadingStart() {
-    const meter = document.querySelector<HTMLDivElement>('#loading-modal .meter')!;
-    meter.style.display = 'none';
-    MicroModal.show('loading-modal');
+    //const meter = document.querySelector<HTMLDivElement>('#loading-modal .meter')!;
+    //meter.style.display = 'none';
+    //MicroModal.show('loading-modal');
 }
 
 function loadingProgress(current: number, total: number) {
-    if (total) {
-        const meter = document.querySelector<HTMLDivElement>('#loading-modal .meter')!;
-        const progress = document.querySelector<HTMLDivElement>('#loading-modal .progress')!;
-        meter.style.display = 'block';
-        progress.style.width = current / total * meter.clientWidth + 'px';
-    }
+    // if (total) {
+    //     const meter = document.querySelector<HTMLDivElement>('#loading-modal .meter')!;
+    //     const progress = document.querySelector<HTMLDivElement>('#loading-modal .progress')!;
+    //     meter.style.display = 'block';
+    //     progress.style.width = current / total * meter.clientWidth + 'px';
+    // }
 }
 
 function loadingStop() {
-    MicroModal.close('loading-modal');
+    // MicroModal.close('loading-modal');
 
     if (!paused) {
         vm.ready.then(() => {
@@ -458,26 +458,27 @@ export function updateKHz() {
     let fps;
     let khz;
 
-    const kHzElement = document.querySelector<HTMLDivElement>('#khz')!;
-    switch (showStats) {
-        case 0: {
-            delta = cycles - lastCycles;
-            khz = Math.trunc(delta / ms);
-            kHzElement.innerText = khz + ' kHz';
-            break;
-        }
-        case 1: {
-            delta = stats.renderedFrames - lastRenderedFrames;
-            fps = Math.trunc(delta / (ms / 1000));
-            kHzElement.innerText = fps + ' rps';
-            break;
-        }
-        default: {
-            delta = stats.frames - lastFrames;
-            fps = Math.trunc(delta / (ms / 1000));
-            kHzElement.innerText = fps + ' fps';
-        }
-    }
+    // MDW: This UI element not present.
+    //const kHzElement = document.querySelector<HTMLDivElement>('#khz')!;
+    //switch (showStats) {
+    //    case 0: {
+    //        delta = cycles - lastCycles;
+    //        khz = Math.trunc(delta / ms);
+    //        kHzElement.innerText = khz + ' kHz';
+    //        break;
+    //    }
+    //     case 1: {
+    //         delta = stats.renderedFrames - lastRenderedFrames;
+    //         fps = Math.trunc(delta / (ms / 1000));
+    //         kHzElement.innerText = fps + ' rps';
+    //         break;
+    //     }
+    //     default: {
+    //         delta = stats.frames - lastFrames;
+    //         fps = Math.trunc(delta / (ms / 1000));
+    //         kHzElement.innerText = fps + ' fps';
+    //     }
+    // }
 
     startTime = now;
     lastCycles = cycles;
@@ -500,14 +501,15 @@ function initSoundToggle() {
 }
 
 function updateSoundButton(on: boolean) {
-    const label = document.querySelector<HTMLDivElement>('#toggle-sound i')!;
-    if (on) {
-        label.classList.remove('fa-volume-off');
-        label.classList.add('fa-volume-up');
-    } else {
-        label.classList.remove('fa-volume-up');
-        label.classList.add('fa-volume-off');
-    }
+    // MDW: These UI elements not present.
+    // const label = document.querySelector<HTMLDivElement>('#toggle-sound i')!;
+    // if (on) {
+    //     label.classList.remove('fa-volume-off');
+    //     label.classList.add('fa-volume-up');
+    // } else {
+    //     label.classList.remove('fa-volume-up');
+    //     label.classList.add('fa-volume-off');
+    // }
 }
 
 function dumpDisk(drive: DriveNumber) {
@@ -655,7 +657,8 @@ if (window.localStorage !== undefined) {
     });
 }
 
-const categorySelect = document.querySelector<HTMLSelectElement>('#category_select')!;
+// MDW: This UI element not present.
+//const categorySelect = document.querySelector<HTMLSelectElement>('#category_select')!;
 
 declare global {
     interface Window {
@@ -664,38 +667,38 @@ declare global {
     }
 }
 
-let oldCat = '';
-let option;
-for (let idx = 0; idx < window.disk_index.length; idx++) {
-    const file = window.disk_index[idx];
-    const cat = file.category;
-    const name = file.name;
-    const disk = file.disk;
-    if (file.e && !window.e) {
-        continue;
-    }
-    if (cat != oldCat) {
-        option = document.createElement('option');
-        option.value = cat;
-        option.innerText = cat;
-        categorySelect.append(option);
+// MDW: These UI elements not present.
+// let option;
+// for (let idx = 0; idx < window.disk_index.length; idx++) {
+//     const file = window.disk_index[idx];
+//     const cat = file.category;
+//     const name = file.name;
+//     const disk = file.disk;
+//     if (file.e && !window.e) {
+//         continue;
+//     }
+//     if (cat != oldCat) {
+//         option = document.createElement('option');
+//         option.value = cat;
+//         option.innerText = cat;
+//         categorySelect.append(option);
 
-        disk_categories[cat] = [];
-        oldCat = cat;
-    }
-    disk_categories[cat].push(file);
-    if (disk) {
-        if (!disk_sets[name]) {
-            disk_sets[name] = [];
-        }
-        disk_sets[name].push(file);
-    }
-}
-option = document.createElement('option');
-option.innerText = 'Local Saves';
-categorySelect.append(option);
-
-updateLocalStorage();
+//         disk_categories[cat] = [];
+//         oldCat = cat;
+//     }
+//     disk_categories[cat].push(file);
+//     if (disk) {
+//         if (!disk_sets[name]) {
+//             disk_sets[name] = [];
+//         }
+//         disk_sets[name].push(file);
+//     }
+// }
+// option = document.createElement('option');
+// option.innerText = 'Local Saves';
+// categorySelect.append(option);
+//
+// updateLocalStorage();
 
 /**
  * Processes the URL fragment. It is expected to be of the form:

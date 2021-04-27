@@ -57,7 +57,6 @@ var background = new Image();
 background.src = 'img/monitor.png';
 background.onload = () => {
   context.drawImage(background, 0, 0, canvas.width, canvas.height);
-  console.log("MDW: Finished drawing image");
 };
 
 export var apple2 = new Apple2(options);

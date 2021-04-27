@@ -216,7 +216,7 @@ type Key = Key2 | Key2e;
 type KeyFunction = (key: KeyboardEvent) => void
 
 export default class KeyBoard {
-    private kb: HTMLElement;
+    //private kb: HTMLElement;
     private keys;
 
     private shifted = false;
@@ -271,54 +271,54 @@ export default class KeyBoard {
     }
 
     shiftKey(down: boolean) {
-        const shiftKeys = this.kb.querySelectorAll('.key-SHIFT');
+        //const shiftKeys = this.kb.querySelectorAll('.key-SHIFT');
         this.shifted = down;
         if (down) {
             this.io.buttonUp(2);
-            shiftKeys.forEach((key) => { key.classList.add('active'); });
+            //shiftKeys.forEach((key) => { key.classList.add('active'); });
         } else {
             this.io.buttonDown(2);
-            shiftKeys.forEach((key) => { key.classList.remove('active'); });
+            //shiftKeys.forEach((key) => { key.classList.remove('active'); });
         }
     }
 
     controlKey(down: boolean) {
-        const ctrlKey = this.kb.querySelector('.key-CTRL');
+        //const ctrlKey = this.kb.querySelector('.key-CTRL');
         this.controlled = down;
         if (down) {
-            ctrlKey!.classList.add('active');
+            //ctrlKey!.classList.add('active');
         } else {
-            ctrlKey!.classList.remove('active');
+            //ctrlKey!.classList.remove('active');
         }
     }
 
     commandKey(down: boolean) {
-        const commandKey = this.kb.querySelector('.key-OPEN_APPLE');
-        if (!commandKey) {
-            return;
-        }
+        //const commandKey = this.kb.querySelector('.key-OPEN_APPLE');
+        //if (!commandKey) {
+        //    return;
+        //}
         this.commanded = down;
         if (down) {
             this.io.buttonDown(0);
-            commandKey.classList.add('active');
+            //commandKey.classList.add('active');
         } else {
             this.io.buttonUp(0);
-            commandKey.classList.remove('active');
+            //commandKey.classList.remove('active');
         }
     }
 
     optionKey(down: boolean) {
-        const optionKey = this.kb.querySelector('.key-CLOSED_APPLE');
-        if (!optionKey) {
-            return;
-        }
+        //const optionKey = this.kb.querySelector('.key-CLOSED_APPLE');
+        // if (!optionKey) {
+        //     return;
+        // }
         this.optioned = down;
         if (down) {
             this.io.buttonDown(1);
-            optionKey.classList.add('active');
+            //optionKey.classList.add('active');
         } else {
             this.io.buttonUp(1);
-            optionKey.classList.remove('active');
+            //optionKey.classList.remove('active');
         }
     }
 
@@ -330,7 +330,7 @@ export default class KeyBoard {
      *     otherwise the used state is set to true.
      */
     capslockKey(down?: boolean | undefined) {
-        const capsLock = this.kb.querySelector('.key-LOCK');
+        //const capsLock = this.kb.querySelector('.key-LOCK');
 
         if (arguments.length == 0) {
             if (this.capslockKeyUsed) {
@@ -346,9 +346,9 @@ export default class KeyBoard {
         }
 
         if (this.capslocked) {
-            capsLock!.classList.add('active');
+            //capsLock!.classList.add('active');
         } else {
-            capsLock!.classList.remove('active');
+            //capsLock!.classList.remove('active');
         }
     }
 
@@ -359,7 +359,7 @@ export default class KeyBoard {
     }
 
     create(el: string) {
-        this.kb = document.querySelector(el)!;
+        //this.kb = document.querySelector(el)!;
         let x, y, row, key, label, label1, label2;
 
         const buildLabel = (k: string) => {
@@ -374,7 +374,7 @@ export default class KeyBoard {
             row = document.createElement('div');
             row.classList.add('row');
             row.classList.add('row' + y);
-            this.kb.append(row);
+            //this.kb.append(row);
             for (x = 0; x < this.keys[0][y].length; x++) {
                 const key1 = this.keys[0][y][x];
                 const key2 = this.keys[1][y][x];
