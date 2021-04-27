@@ -53,7 +53,7 @@ export class Screen implements OptionHandler {
                         name: SCREEN_MONO,
                         label: 'Mono Screen',
                         type: BOOLEAN_OPTION,
-                        defaultVal: false,
+                        defaultVal: true,
                     },
                     {
                         name: SCREEN_SCANLINE,
@@ -65,7 +65,7 @@ export class Screen implements OptionHandler {
                         name: SCREEN_GL,
                         label: 'GL Renderer *',
                         type: BOOLEAN_OPTION,
-                        defaultVal: true,
+                        defaultVal: false,
                     },
                 ]
             }

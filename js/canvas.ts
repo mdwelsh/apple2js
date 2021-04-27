@@ -31,7 +31,7 @@ let _80colMode = false;
 let altCharMode = false;
 let an3 = false;
 let doubleHiresMode = false;
-let monoDHRMode = false;
+let monoDHRMode = true;
 const colorDHRMode = false;
 let mixedDHRMode = false;
 let highColorHGRMode = false;
@@ -171,7 +171,7 @@ export class LoresPage2D implements LoresPage {
 
     private _buffer: memory[] = [];
     private _refreshing = false;
-    private _monoMode = false;
+    private _monoMode = true;
     private _blink = false;
 
     dirty: Region = {...notDirty}
@@ -563,7 +563,7 @@ export class HiresPage2D implements HiresPage {
 
     private _buffer: memory[] = [];
     private _refreshing = false;
-    private _monoMode = false;
+    private _monoMode = true;
 
     constructor(
         private page: number) {
