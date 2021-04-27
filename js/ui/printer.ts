@@ -24,7 +24,7 @@ import { byte } from '../types';
   * *   `CR` (ASCII 13): a newline and carriage return
   */
 export default class Printer {
-    private paper: HTMLElement;
+    //private paper: HTMLElement;
     private _lineBuffer = '';
     private _line: HTMLElement;
     private _rawLen = 0;
@@ -34,8 +34,8 @@ export default class Printer {
      * Creates a new printer bound to the given element.
      * @param {string} el The selector of the element on which to bind the "paper".
      */
-    constructor(el: string) {
-        this.paper = document.querySelector(el)!;
+    constructor(_el: string) {
+        //this.paper = document.querySelector(el)!;
         this.newLine();
     }
 
@@ -43,7 +43,7 @@ export default class Printer {
         this._line = document.createElement('div');
         this._line.classList.add('line');
         this._line.innerText = this._lineBuffer;
-        this.paper.append(this._line);
+        //this.paper.append(this._line);
         this._lineBuffer = '';
     }
 
@@ -76,14 +76,14 @@ export default class Printer {
 
     clear() {
         this._lineBuffer = '';
-        this.paper.innerHTML = '';
+        //this.paper.innerHTML = '';
         this.newLine();
         this._raw = new Uint8Array(1024);
         this._rawLen = 0;
     }
 
     hasPrintout() {
-        return this.paper.innerText.length > 0;
+        //return this.paper.innerText.length > 0;
     }
 
     getRawOutput() {

@@ -89,15 +89,31 @@ export class JoyStick implements OptionHandler {
 
         const s = document.querySelector<HTMLDivElement>('#screen')!;
         const offset = s.getBoundingClientRect();
+
+        // MDW: Updated the following since the canvas is not
+        // spanning the entire display.
         let x = (evt.pageX - offset.left) / s.clientWidth;
         let y = (evt.pageY - offset.top) / s.clientHeight;
-        const z = x;
 
+        // These roughly correspond to the x/y ranges of the displayed
+        // part of the canvas. If the display is adjusted in canvas.ts,
+        // these values would need to be updated too.
+        const LOWER_X = 0.15;
+        const LOWER_Y = 0.18;
+        const UPPER_X = 0.75;
+        const UPPER_Y = 0.8;
+        x -= LOWER_X;
+        y -= LOWER_Y;
+        x /= (UPPER_X - LOWER_X);
+        y /= (UPPER_Y - LOWER_Y);
+        x = Math.max(0, Math.min(1.0, x));
+        y = Math.max(0, Math.min(1.0, y));
+        
+        const z = x;
         if (this.swapXY) {
             x = y;
             y = z;
         }
-
         this.io.paddle(0, this.flipX ? 1 - x : x);
         this.io.paddle(1, this.flipY ? 1 - y : y);
     }

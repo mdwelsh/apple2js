@@ -40,7 +40,8 @@ switch (romVersion) {
 }
 
 var options = {
-    gl: prefs.readPref('gl_canvas', 'true') === 'true',
+    // gl: prefs.readPref('gl_canvas', 'true') === 'true',
+    gl: false,  // MDW: Always disable this.
     canvas: document.getElementById('screen'),
     rom: rom,
     characterRom: characterRom,
@@ -48,6 +49,14 @@ var options = {
     enhanced: enhanced,
     cards: [],
     tick: updateUI
+};
+
+var canvas = document.getElementById('screen');
+var context = canvas.getContext('2d');
+var background = new Image();
+background.src = 'img/monitor.png';
+background.onload = () => {
+    context.drawImage(background, 0, 0, canvas.width, canvas.height);
 };
 
 export var apple2 = new Apple2(options);

@@ -11,8 +11,8 @@ import Tape, { TAPE_TYPES } from './tape';
 import ApplesoftDump from '../applesoft/decompiler';
 import ApplesoftCompiler from '../applesoft/compiler';
 
-import { debug, gup, hup } from '../util';
-import { Apple2, Stats } from '../apple2';
+import { debug, /* gup, */ hup } from '../util';
+import { Apple2 /*, Stats */ } from '../apple2';
 import DiskII, { DriveNumber, DRIVE_NUMBERS } from '../cards/disk2';
 import SmartPort from '../cards/smartport';
 import CPU6502 from '../cpu6502';
@@ -28,10 +28,10 @@ import { System } from './system';
 
 let paused = false;
 
-let startTime = Date.now();
-let lastCycles = 0;
-let lastFrames = 0;
-let lastRenderedFrames = 0;
+//let startTime = Date.now();
+// let lastCycles = 0;
+// let lastFrames = 0;
+// let lastRenderedFrames = 0;
 
 let hashtag = document.location.hash;
 
@@ -50,7 +50,7 @@ type DiskCollection = {
 };
 
 const disk_categories: DiskCollection = { 'Local Saves': [] };
-const disk_sets: DiskCollection = {};
+//const disk_sets: DiskCollection = {};
 // Disk names
 const disk_cur_name: string[] = [];
 // Disk categories
@@ -58,7 +58,7 @@ const disk_cur_cat: string[] = [];
 
 let _apple2: Apple2;
 let cpu: CPU6502;
-let stats: Stats;
+//let stats: Stats;
 let vm: VideoModes;
 let tape: Tape;
 let _disk2: DiskII;
@@ -90,43 +90,43 @@ export function openLoad(driveString: string, event: MouseEvent) {
         openLoadHTTP(drive);
     } else {
         if (disk_cur_cat[drive]) {
-            const element = document.querySelector<HTMLSelectElement>('#category_select')!;
-            element.value = disk_cur_cat[drive];
+            //const element = document.querySelector<HTMLSelectElement>('#category_select')!;
+            //element.value = disk_cur_cat[drive];
             selectCategory();
         }
-        MicroModal.show('load-modal');
+        //MicroModal.show('load-modal');
     }
 }
 
 export function openSave(driveString: string, event: MouseEvent) {
     const drive = parseInt(driveString, 10) as DriveNumber;
 
-    const mimeType = 'application/octet-stream';
+    //const mimeType = 'application/octet-stream';
     const data = _disk2.getBinary(drive);
-    const a = document.querySelector<HTMLAnchorElement>('#local_save_link')!;
+    // const a = document.querySelector<HTMLAnchorElement>('#local_save_link')!;
 
     if (!data) {
         alert('No data from drive ' + drive);
         return;
     }
 
-    const blob = new Blob([data], { 'type': mimeType });
-    a.href = window.URL.createObjectURL(blob);
-    a.download = driveLights.label(drive) + '.dsk';
+    //const blob = new Blob([data], { 'type': mimeType });
+    //a.href = window.URL.createObjectURL(blob);
+    //a.download = driveLights.label(drive) + '.dsk';
 
     if (event.metaKey) {
         dumpDisk(drive);
     } else {
-        const saveName = document.querySelector<HTMLInputElement>('#save_name')!;
-        saveName.value = driveLights.label(drive);
-        MicroModal.show('save-modal');
+        //const saveName = document.querySelector<HTMLInputElement>('#save_name')!;
+        //saveName.value = driveLights.label(drive);
+        //MicroModal.show('save-modal');
     }
 }
 
-export function openAlert(msg: string) {
-    const el = document.querySelector<HTMLDivElement>('#alert-modal .message')!;
-    el.innerText = msg;
-    MicroModal.show('alert-modal');
+export function openAlert(_msg: string) {
+    //const el = document.querySelector<HTMLDivElement>('#alert-modal .message')!;
+    //el.innerText = msg;
+    //MicroModal.show('alert-modal');
 }
 
 /********************************************************************
@@ -184,22 +184,22 @@ export function handleDrop(drive: number, event: DragEvent) {
 }
 
 function loadingStart() {
-    const meter = document.querySelector<HTMLDivElement>('#loading-modal .meter')!;
-    meter.style.display = 'none';
-    MicroModal.show('loading-modal');
+    //const meter = document.querySelector<HTMLDivElement>('#loading-modal .meter')!;
+    //meter.style.display = 'none';
+    //MicroModal.show('loading-modal');
 }
 
-function loadingProgress(current: number, total: number) {
-    if (total) {
-        const meter = document.querySelector<HTMLDivElement>('#loading-modal .meter')!;
-        const progress = document.querySelector<HTMLDivElement>('#loading-modal .progress')!;
-        meter.style.display = 'block';
-        progress.style.width = current / total * meter.clientWidth + 'px';
-    }
+function loadingProgress(_current: number, _total: number) {
+    // if (total) {
+    //     const meter = document.querySelector<HTMLDivElement>('#loading-modal .meter')!;
+    //     const progress = document.querySelector<HTMLDivElement>('#loading-modal .progress')!;
+    //     meter.style.display = 'block';
+    //     progress.style.width = current / total * meter.clientWidth + 'px';
+    // }
 }
 
 function loadingStop() {
-    MicroModal.close('loading-modal');
+    // MicroModal.close('loading-modal');
 
     if (!paused) {
         vm.ready.then(() => {
@@ -450,38 +450,39 @@ function openManage() {
 let showStats = 0;
 
 export function updateKHz() {
-    const now = Date.now();
-    const ms = now - startTime;
-    const cycles = cpu.getCycles();
-    let delta;
-    let fps;
-    let khz;
+    //const now = Date.now();
+    //const ms = now - startTime;
+    //const cycles = cpu.getCycles();
+    //let delta;
+    //let fps;
+    //let khz;
 
-    const kHzElement = document.querySelector<HTMLDivElement>('#khz')!;
-    switch (showStats) {
-        case 0: {
-            delta = cycles - lastCycles;
-            khz = Math.trunc(delta / ms);
-            kHzElement.innerText = khz + ' kHz';
-            break;
-        }
-        case 1: {
-            delta = stats.renderedFrames - lastRenderedFrames;
-            fps = Math.trunc(delta / (ms / 1000));
-            kHzElement.innerText = fps + ' rps';
-            break;
-        }
-        default: {
-            delta = stats.frames - lastFrames;
-            fps = Math.trunc(delta / (ms / 1000));
-            kHzElement.innerText = fps + ' fps';
-        }
-    }
+    // MDW: This UI element not present.
+    //const kHzElement = document.querySelector<HTMLDivElement>('#khz')!;
+    //switch (showStats) {
+    //    case 0: {
+    //        delta = cycles - lastCycles;
+    //        khz = Math.trunc(delta / ms);
+    //        kHzElement.innerText = khz + ' kHz';
+    //        break;
+    //    }
+    //     case 1: {
+    //         delta = stats.renderedFrames - lastRenderedFrames;
+    //         fps = Math.trunc(delta / (ms / 1000));
+    //         kHzElement.innerText = fps + ' rps';
+    //         break;
+    //     }
+    //     default: {
+    //         delta = stats.frames - lastFrames;
+    //         fps = Math.trunc(delta / (ms / 1000));
+    //         kHzElement.innerText = fps + ' fps';
+    //     }
+    // }
 
-    startTime = now;
-    lastCycles = cycles;
-    lastRenderedFrames = stats.renderedFrames;
-    lastFrames = stats.frames;
+    //startTime = now;
+    // lastCycles = cycles;
+    // lastRenderedFrames = stats.renderedFrames;
+    // lastFrames = stats.frames;
 }
 
 export function toggleShowFPS() {
@@ -498,20 +499,21 @@ function initSoundToggle() {
     updateSoundButton(audio.isEnabled());
 }
 
-function updateSoundButton(on: boolean) {
-    const label = document.querySelector<HTMLDivElement>('#toggle-sound i')!;
-    if (on) {
-        label.classList.remove('fa-volume-off');
-        label.classList.add('fa-volume-up');
-    } else {
-        label.classList.remove('fa-volume-up');
-        label.classList.add('fa-volume-off');
-    }
+function updateSoundButton(_on: boolean) {
+    // MDW: These UI elements not present.
+    // const label = document.querySelector<HTMLDivElement>('#toggle-sound i')!;
+    // if (on) {
+    //     label.classList.remove('fa-volume-off');
+    //     label.classList.add('fa-volume-up');
+    // } else {
+    //     label.classList.remove('fa-volume-up');
+    //     label.classList.add('fa-volume-off');
+    // }
 }
 
 function dumpDisk(drive: DriveNumber) {
     const wind = window.open('', '_blank')!;
-    wind.document.title = driveLights.label(drive);
+    //wind.document.title = driveLights.label(drive);
     wind.document.write('<pre>');
     wind.document.write(_disk2.getJSON(drive, true));
     wind.document.write('</pre>');
@@ -654,7 +656,8 @@ if (window.localStorage !== undefined) {
     });
 }
 
-const categorySelect = document.querySelector<HTMLSelectElement>('#category_select')!;
+// MDW: This UI element not present.
+//const categorySelect = document.querySelector<HTMLSelectElement>('#category_select')!;
 
 declare global {
     interface Window {
@@ -663,38 +666,38 @@ declare global {
     }
 }
 
-let oldCat = '';
-let option;
-for (let idx = 0; idx < window.disk_index.length; idx++) {
-    const file = window.disk_index[idx];
-    const cat = file.category;
-    const name = file.name;
-    const disk = file.disk;
-    if (file.e && !window.e) {
-        continue;
-    }
-    if (cat != oldCat) {
-        option = document.createElement('option');
-        option.value = cat;
-        option.innerText = cat;
-        categorySelect.append(option);
+// MDW: These UI elements not present.
+// let option;
+// for (let idx = 0; idx < window.disk_index.length; idx++) {
+//     const file = window.disk_index[idx];
+//     const cat = file.category;
+//     const name = file.name;
+//     const disk = file.disk;
+//     if (file.e && !window.e) {
+//         continue;
+//     }
+//     if (cat != oldCat) {
+//         option = document.createElement('option');
+//         option.value = cat;
+//         option.innerText = cat;
+//         categorySelect.append(option);
 
-        disk_categories[cat] = [];
-        oldCat = cat;
-    }
-    disk_categories[cat].push(file);
-    if (disk) {
-        if (!disk_sets[name]) {
-            disk_sets[name] = [];
-        }
-        disk_sets[name].push(file);
-    }
-}
-option = document.createElement('option');
-option.innerText = 'Local Saves';
-categorySelect.append(option);
-
-updateLocalStorage();
+//         disk_categories[cat] = [];
+//         oldCat = cat;
+//     }
+//     disk_categories[cat].push(file);
+//     if (disk) {
+//         if (!disk_sets[name]) {
+//             disk_sets[name] = [];
+//         }
+//         disk_sets[name].push(file);
+//     }
+// }
+// option = document.createElement('option');
+// option.innerText = 'Local Saves';
+// categorySelect.append(option);
+//
+// updateLocalStorage();
 
 /**
  * Processes the URL fragment. It is expected to be of the form:
@@ -784,7 +787,7 @@ function onLoaded(apple2: Apple2, disk2: DiskII, smartPort: SmartPort, printer: 
     _apple2 = apple2;
     cpu = _apple2.getCPU();
     io = _apple2.getIO();
-    stats = apple2.getStats();
+    //stats = apple2.getStats();
     vm = apple2.getVideoModes();
     tape = new Tape(io);
     _disk2 = disk2;
@@ -843,17 +846,19 @@ function onLoaded(apple2: Apple2, disk2: DiskII, smartPort: SmartPort, printer: 
     setInterval(updateKHz, 1000);
     initGamepad();
 
-    // Check for disks in hashtag
+    // MDW: Force load of our disk image on startup.
+    loadAjax(1, 'json/disks/mdwos.json');
 
-    const hash = gup('disk') || hup();
-    if (hash) {
-        _apple2.stop();
-        processHash(hash);
-    } else {
-        vm.ready.then(() => {
-            _apple2.run();
-        });
-    }
+    // Check for disks in hashtag
+    //const hash = gup('disk') || hup();
+    //if (hash) {
+    //    _apple2.stop();
+    //    processHash(hash);
+    //} else {
+    //    vm.ready.then(() => {
+    //        _apple2.run();
+    //    });
+    //}
 }
 
 export function initUI(apple2: Apple2, disk2: DiskII, smartPort: SmartPort, printer: Printer, e: boolean) {

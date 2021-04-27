@@ -63,6 +63,12 @@ const LOC = {
     PADDLE1: 0x65, // bit 7: status of pdl-1 timer (read)
     PADDLE2: 0x66, // bit 7: status of pdl-2 timer (read)
     PADDLE3: 0x67, // bit 7: status of pdl-3 timer (read)
+
+    // MDW: Added for MDWOS
+    OPENLINKURL: 0x6A,  // First byte of URL address.
+    OPENLINKURL2: 0x6B, // Second byte of URL address.
+    OPENLINK: 0x6C,     // Actually open the link.
+
     PDLTRIG: 0x70, // trigger paddles
     ACCEL: 0x74, // CPU Speed control
 };
@@ -95,6 +101,8 @@ export default class Apple2IO implements MemoryPages, Restorable<Apple2IOState> 
 
     private _trigger = 0;
     private _annunciators: Annunciators = [false, false, false, false];
+    private _open_link_url_addr1: byte = 0;
+    private _open_link_url_addr2: byte = 0;
 
     private _tape: TapeData = [];
     private _tapeOffset = 0;
@@ -253,6 +261,30 @@ export default class Apple2IO implements MemoryPages, Restorable<Apple2IOState> 
                 result = this._tapeCurrent ? 0x80 : 0x00;
                 break;
 
+            // Added for MDWOS
+            case LOC.OPENLINKURL:
+                if (val === undefined) {
+                    result = 0x00;
+                } else {
+                    this._open_link_url_addr1 = val;
+                    console.log("MDW: openlinkurl written: " + val);
+                }
+                break;
+
+            case LOC.OPENLINKURL2:
+                if (val === undefined) {
+                    result = 0x00;
+                } else {
+                    this._open_link_url_addr2 = val;
+                    console.log("MDW: openlinkurl2 written: " + val);
+                }
+                break;
+
+            case LOC.OPENLINK:
+                result = 0x42;
+                this.cpu.openlink((this._open_link_url_addr2 << 8) | this._open_link_url_addr1);
+                break;
+
             default:
                 switch (off & 0xf0) {
                     case LOC.KEYBOARD: // C00x
@@ -360,7 +392,7 @@ export default class Apple2IO implements MemoryPages, Restorable<Apple2IOState> 
                 slot = page & 0x0f;
                 card = this._slot[slot];
                 if (this._auxRom != card) {
-                // _debug('Setting auxRom to slot', slot);
+                    // _debug('Setting auxRom to slot', slot);
                     this._auxRom = card;
                 }
                 if (card) {
@@ -396,7 +428,7 @@ export default class Apple2IO implements MemoryPages, Restorable<Apple2IOState> 
                 slot = page & 0x0f;
                 card = this._slot[slot];
                 if (this._auxRom != card) {
-                // _debug('Setting auxRom to slot', slot);
+                    // _debug('Setting auxRom to slot', slot);
                     this._auxRom = card;
                 }
                 if (card) {
