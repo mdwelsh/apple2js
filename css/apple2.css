@@ -39,8 +39,7 @@ input[type="text"] {
 body {
     margin: 16px 0;
     font-size: 14px;
-    /* background-color: #c4c1a0; */ /* Pantone 453 */
-    background-color: #404040;
+    background-color: #202020;
     font-family: sans-serif;
 }
 
