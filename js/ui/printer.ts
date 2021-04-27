@@ -34,7 +34,7 @@ export default class Printer {
      * Creates a new printer bound to the given element.
      * @param {string} el The selector of the element on which to bind the "paper".
      */
-    constructor(el: string) {
+    constructor(_el: string) {
         //this.paper = document.querySelector(el)!;
         this.newLine();
     }

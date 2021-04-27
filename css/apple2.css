@@ -196,9 +196,11 @@ canvas {
   float: left;
 }
 
+/*
 .mono {
-   /* filter: url('#green'); */
+   filter: url('#green'); 
 }
+*/
 
 .scanlines:after {
     display: block;

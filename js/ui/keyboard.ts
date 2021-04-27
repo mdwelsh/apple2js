@@ -358,7 +358,7 @@ export default class KeyBoard {
         this.cpu.reset();
     }
 
-    create(el: string) {
+    create(_el: string) {
         //this.kb = document.querySelector(el)!;
         let x, y, row, key, label, label1, label2;
 

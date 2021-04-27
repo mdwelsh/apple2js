@@ -56,7 +56,7 @@ var context = canvas.getContext('2d');
 var background = new Image();
 background.src = 'img/monitor.png';
 background.onload = () => {
-  context.drawImage(background, 0, 0, canvas.width, canvas.height);
+    context.drawImage(background, 0, 0, canvas.width, canvas.height);
 };
 
 export var apple2 = new Apple2(options);

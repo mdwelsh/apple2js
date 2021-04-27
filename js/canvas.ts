@@ -911,8 +911,8 @@ export class VideoModes2D implements VideoModes {
     private _hgrs: HiresPage[];
     private _flag = 0;
     private _context: CanvasRenderingContext2D | null;
-    private _left: number;
-    private _top: number;
+    // private _left: number;
+    // private _top: number;
     private _refreshFlag: boolean = true;
 
     public ready = Promise.resolve();
@@ -929,8 +929,8 @@ export class VideoModes2D implements VideoModes {
         this._context = this.canvas.getContext('2d');
         //this._left = (this.canvas.width - 560) / 2;
         //this._top = (this.canvas.height - 384) / 2;
-        this._left = (this.canvas.width - TARGET_WIDTH) / 2;
-        this._top = (this.canvas.height - TARGET_HEIGHT) / 2;
+        // this._left = (this.canvas.width - TARGET_WIDTH) / 2;
+        // this._top = (this.canvas.height - TARGET_HEIGHT) / 2;
     }
 
     private _refresh() {

@@ -12,7 +12,7 @@ import ApplesoftDump from '../applesoft/decompiler';
 import ApplesoftCompiler from '../applesoft/compiler';
 
 import { debug, /* gup, */ hup } from '../util';
-import { Apple2, Stats } from '../apple2';
+import { Apple2 /*, Stats */ } from '../apple2';
 import DiskII, { DriveNumber, DRIVE_NUMBERS } from '../cards/disk2';
 import SmartPort from '../cards/smartport';
 import CPU6502 from '../cpu6502';
@@ -28,10 +28,10 @@ import { System } from './system';
 
 let paused = false;
 
-let startTime = Date.now();
-let lastCycles = 0;
-let lastFrames = 0;
-let lastRenderedFrames = 0;
+//let startTime = Date.now();
+// let lastCycles = 0;
+// let lastFrames = 0;
+// let lastRenderedFrames = 0;
 
 let hashtag = document.location.hash;
 
@@ -50,7 +50,7 @@ type DiskCollection = {
 };
 
 const disk_categories: DiskCollection = { 'Local Saves': [] };
-const disk_sets: DiskCollection = {};
+//const disk_sets: DiskCollection = {};
 // Disk names
 const disk_cur_name: string[] = [];
 // Disk categories
@@ -58,7 +58,7 @@ const disk_cur_cat: string[] = [];
 
 let _apple2: Apple2;
 let cpu: CPU6502;
-let stats: Stats;
+//let stats: Stats;
 let vm: VideoModes;
 let tape: Tape;
 let _disk2: DiskII;
@@ -101,7 +101,7 @@ export function openLoad(driveString: string, event: MouseEvent) {
 export function openSave(driveString: string, event: MouseEvent) {
     const drive = parseInt(driveString, 10) as DriveNumber;
 
-    const mimeType = 'application/octet-stream';
+    //const mimeType = 'application/octet-stream';
     const data = _disk2.getBinary(drive);
     // const a = document.querySelector<HTMLAnchorElement>('#local_save_link')!;
 
@@ -110,7 +110,7 @@ export function openSave(driveString: string, event: MouseEvent) {
         return;
     }
 
-    const blob = new Blob([data], { 'type': mimeType });
+    //const blob = new Blob([data], { 'type': mimeType });
     //a.href = window.URL.createObjectURL(blob);
     //a.download = driveLights.label(drive) + '.dsk';
 
@@ -123,7 +123,7 @@ export function openSave(driveString: string, event: MouseEvent) {
     }
 }
 
-export function openAlert(msg: string) {
+export function openAlert(_msg: string) {
     //const el = document.querySelector<HTMLDivElement>('#alert-modal .message')!;
     //el.innerText = msg;
     //MicroModal.show('alert-modal');
@@ -189,7 +189,7 @@ function loadingStart() {
     //MicroModal.show('loading-modal');
 }
 
-function loadingProgress(current: number, total: number) {
+function loadingProgress(_current: number, _total: number) {
     // if (total) {
     //     const meter = document.querySelector<HTMLDivElement>('#loading-modal .meter')!;
     //     const progress = document.querySelector<HTMLDivElement>('#loading-modal .progress')!;
@@ -217,7 +217,6 @@ interface JSONBinaryImage {
 }
 
 export function loadAjax(drive: DriveNumber, url: string) {
-    console.log("MDW: loadAjax called with drive " + drive + " url: " + url);
     loadingStart();
 
     fetch(url).then(function (response: Response) {
@@ -451,12 +450,12 @@ function openManage() {
 let showStats = 0;
 
 export function updateKHz() {
-    const now = Date.now();
-    const ms = now - startTime;
-    const cycles = cpu.getCycles();
-    let delta;
-    let fps;
-    let khz;
+    //const now = Date.now();
+    //const ms = now - startTime;
+    //const cycles = cpu.getCycles();
+    //let delta;
+    //let fps;
+    //let khz;
 
     // MDW: This UI element not present.
     //const kHzElement = document.querySelector<HTMLDivElement>('#khz')!;
@@ -480,10 +479,10 @@ export function updateKHz() {
     //     }
     // }
 
-    startTime = now;
-    lastCycles = cycles;
-    lastRenderedFrames = stats.renderedFrames;
-    lastFrames = stats.frames;
+    //startTime = now;
+    // lastCycles = cycles;
+    // lastRenderedFrames = stats.renderedFrames;
+    // lastFrames = stats.frames;
 }
 
 export function toggleShowFPS() {
@@ -500,7 +499,7 @@ function initSoundToggle() {
     updateSoundButton(audio.isEnabled());
 }
 
-function updateSoundButton(on: boolean) {
+function updateSoundButton(_on: boolean) {
     // MDW: These UI elements not present.
     // const label = document.querySelector<HTMLDivElement>('#toggle-sound i')!;
     // if (on) {
@@ -514,7 +513,7 @@ function updateSoundButton(on: boolean) {
 
 function dumpDisk(drive: DriveNumber) {
     const wind = window.open('', '_blank')!;
-    wind.document.title = driveLights.label(drive);
+    //wind.document.title = driveLights.label(drive);
     wind.document.write('<pre>');
     wind.document.write(_disk2.getJSON(drive, true));
     wind.document.write('</pre>');
@@ -788,7 +787,7 @@ function onLoaded(apple2: Apple2, disk2: DiskII, smartPort: SmartPort, printer: 
     _apple2 = apple2;
     cpu = _apple2.getCPU();
     io = _apple2.getIO();
-    stats = apple2.getStats();
+    //stats = apple2.getStats();
     vm = apple2.getVideoModes();
     tape = new Tape(io);
     _disk2 = disk2;
@@ -848,7 +847,7 @@ function onLoaded(apple2: Apple2, disk2: DiskII, smartPort: SmartPort, printer: 
     initGamepad();
 
     // MDW: Force load of our disk image on startup.
-    loadAjax(1, "json/disks/mdwos.json");
+    loadAjax(1, 'json/disks/mdwos.json');
 
     // Check for disks in hashtag
     //const hash = gup('disk') || hup();
