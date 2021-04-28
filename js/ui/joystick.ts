@@ -15,6 +15,7 @@ export class JoyStick implements OptionHandler {
 
     constructor(private io: Apple2IO) {
         document.addEventListener('mousemove', this.mousemove);
+        document.addEventListener('touchmove', this.mousemove);
         document.querySelectorAll('canvas').forEach((canvas) => {
             canvas.addEventListener('mousedown', (evt) => {
                 if (!this.gamepad) {
@@ -23,6 +24,17 @@ export class JoyStick implements OptionHandler {
                 evt.preventDefault();
             });
             canvas.addEventListener('mouseup', (evt) => {
+                if (!this.gamepad) {
+                    io.buttonUp(evt.which == 1 ? 0 : 1);
+                }
+            });
+            canvas.addEventListener('touchstart', (evt) => {
+                if (!this.gamepad) {
+                    io.buttonDown(evt.which == 1 ? 0 : 1);
+                }
+                evt.preventDefault();
+            });
+            canvas.addEventListener('touchend', (evt) => {
                 if (!this.gamepad) {
                     io.buttonUp(evt.which == 1 ? 0 : 1);
                 }

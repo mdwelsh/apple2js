@@ -267,7 +267,6 @@ export default class Apple2IO implements MemoryPages, Restorable<Apple2IOState> 
                     result = 0x00;
                 } else {
                     this._open_link_url_addr1 = val;
-                    console.log("MDW: openlinkurl written: " + val);
                 }
                 break;
 
@@ -276,13 +275,24 @@ export default class Apple2IO implements MemoryPages, Restorable<Apple2IOState> 
                     result = 0x00;
                 } else {
                     this._open_link_url_addr2 = val;
-                    console.log("MDW: openlinkurl2 written: " + val);
                 }
                 break;
 
             case LOC.OPENLINK:
                 result = 0x42;
-                this.cpu.openlink((this._open_link_url_addr2 << 8) | this._open_link_url_addr1);
+                var addr = (this._open_link_url_addr2 << 8) | this._open_link_url_addr1;
+                if (addr != 0) {
+                    this.cpu.openlink(addr);
+                }
+                // Clear address to prevent double-open.
+                this._open_link_url_addr1 = 0;
+                this._open_link_url_addr2 = 0;
+                // Switching to a new tab prevents the mouseUp
+                // event from reaching the canvas. This is not
+                // a great hack but does the trick to prevent
+                // the canvas from continually looping on a
+                // mouseDown event.
+                this.buttonUp(0);
                 break;
 
             default:
