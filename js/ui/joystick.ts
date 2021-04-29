@@ -15,7 +15,6 @@ export class JoyStick implements OptionHandler {
 
     constructor(private io: Apple2IO) {
         document.addEventListener('mousemove', this.mousemove);
-        document.addEventListener('touchmove', this.mousemove);
         document.querySelectorAll('canvas').forEach((canvas) => {
             canvas.addEventListener('mousedown', (evt) => {
                 if (!this.gamepad) {
@@ -29,14 +28,15 @@ export class JoyStick implements OptionHandler {
                 }
             });
             canvas.addEventListener('touchstart', (evt) => {
+                this.touchpos(evt);
                 if (!this.gamepad) {
-                    io.buttonDown(evt.which == 1 ? 0 : 1);
+                    io.buttonDown(0);
                 }
                 evt.preventDefault();
             });
-            canvas.addEventListener('touchend', (evt) => {
+            canvas.addEventListener('touchend', (_evt) => {
                 if (!this.gamepad) {
-                    io.buttonUp(evt.which == 1 ? 0 : 1);
+                    io.buttonUp(0);
                 }
             });
             canvas.addEventListener('contextmenu', (evt) => {
@@ -94,19 +94,7 @@ export class JoyStick implements OptionHandler {
         }
     }
 
-    private mousemove = (evt: MouseEvent) => {
-        if (this.gamepad || this.disableMouseJoystick) {
-            return;
-        }
-
-        const s = document.querySelector<HTMLDivElement>('#screen')!;
-        const offset = s.getBoundingClientRect();
-
-        // MDW: Updated the following since the canvas is not
-        // spanning the entire display.
-        let x = (evt.pageX - offset.left) / s.clientWidth;
-        let y = (evt.pageY - offset.top) / s.clientHeight;
-
+    private setMouseCoordinates(x: number, y: number) {
         // These roughly correspond to the x/y ranges of the displayed
         // part of the canvas. If the display is adjusted in canvas.ts,
         // these values would need to be updated too.
@@ -128,5 +116,40 @@ export class JoyStick implements OptionHandler {
         }
         this.io.paddle(0, this.flipX ? 1 - x : x);
         this.io.paddle(1, this.flipY ? 1 - y : y);
+    }
+
+    private mousemove = (evt: MouseEvent) => {
+        if (this.gamepad || this.disableMouseJoystick) {
+            return;
+        }
+
+        const s = document.querySelector<HTMLDivElement>('#screen')!;
+        const offset = s.getBoundingClientRect();
+
+        // MDW: Updated the following since the canvas is not
+        // spanning the entire display.
+        let x = (evt.pageX - offset.left) / s.clientWidth;
+        let y = (evt.pageY - offset.top) / s.clientHeight;
+
+        this.setMouseCoordinates(x, y);
+    }
+
+    private touchpos = (evt: TouchEvent) => {
+        if (this.gamepad || this.disableMouseJoystick) {
+            return;
+        }
+
+        const s = document.querySelector<HTMLDivElement>('#screen')!;
+        const offset = s.getBoundingClientRect();
+
+        // This is a bit naive as it just iterates through
+        // all of the new touches and sets the paddle positions
+        // for each.
+        for (let i=0; i < evt.changedTouches.length; i++) {
+            let touch = evt.changedTouches.item(i);
+            let x = (touch!.pageX - offset.left) / s.clientWidth;
+            let y = (touch!.pageY - offset.top) / s.clientHeight;
+            this.setMouseCoordinates(x, y);
+        }
     }
 }
